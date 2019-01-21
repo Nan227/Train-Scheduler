@@ -1,0 +1,9 @@
+#jumbotron{
+  background-color: rgb(76, 22, 201);
+  color: white;
+}
+
+body {
+      background-image: url("./..assets/images/train-travel.jpg");
+      background-image: -moz-repeating-linear-gradient();
+    }

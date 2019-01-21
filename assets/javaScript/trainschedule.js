@@ -12,6 +12,11 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+function currentTime() {
+  var current = moment().format('LT');
+  $("#currentTime").html(current);
+  setTimeout(currentTime, 1000);
+};
 //  Button for adding Train information
 $("#add-train-btn").on("click", function(event) {
   event.preventDefault();
@@ -65,7 +70,7 @@ database.ref().on("child_added", function(childSnapshot) {
   console.log(trainFrequency);
 
    // First Time (pushed back 1 year to make sure it comes before current time)
-  var trainTimeConverted = moment(trainTime, "HH:mm").subtract(1, "years");
+  var trainTimeConverted = moment(trainTime, "hh:mm").subtract(1, "years");
   console.log(trainTimeConverted);
 
 // Current Time
@@ -87,26 +92,36 @@ console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
 // Next Train
 var nextTrain = moment().add(tMinutesTillTrain, "minutes");
 console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+var key = childSnapshot.key;
+
+
+// display
+var newrow = $("<tr>");
+newrow.append($("<td>" + childSnapshot.val().name + "</td>"));
+newrow.append($("<td>" + childSnapshot.val().destination + "</td>"));
+newrow.append($("<td class='text-center'>" + childSnapshot.val().frequency + "</td>"));
+newrow.append($("<td class='text-center'>" + moment(nextTrain).format("LT") + "</td>"));
+newrow.append($("<td class='text-center'>" + tMinutesTillTrain + "</td>"));
+newrow.append($("<td class='text-center'><button class='arrival btn btn-danger btn-xs' data-key='" + key + "'>X</button></td>"));
+
+if (tMinutesTillTrain < 6) {
+  newrow.addClass("info");
+}
+
+$("#train-table-rows").append(newrow);
 
 
 
-  // Create the new row
-  var newRow = $("<tr>").append(
-    $("<td>").text(trainName),
-    $("<td>").text(trainDestiny),
-    $("<td>").text(trainFrequency),
-    $("<td>").text(nextTrain),
-    $("<td>").text(tMinutesTillTrain),
-    
-  );
-
-  // Append the new row to the table
-  $("#train-table > tbody").append(newRow);
-  
+$(document).on("click", ".arrival", function() {
+keyref = $(this).attr("data-key");
+database.ref().child(keyref).remove();
+window.location.reload();
 });
 
-$("#clear-train-btn").on("click", function(event) {
-  event.preventDefault();
+currentTime();
 
-  $("#train-table > tbody").empty(newRow);
-});
+// setInterval(function() {
+// window.location.reload();
+// }, 60000);
+
+})
