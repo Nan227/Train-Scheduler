@@ -19,4 +19,6 @@ In this project, I create a train schedule application that incorporates Firebas
   * Code this app to calculate when the next train will arrive; this should be relative to the current time.
   
   * Users from many different machines must be able to view same train times.
+  # Try here
+  https://nan227.github.io/Train-Scheduler/
   
